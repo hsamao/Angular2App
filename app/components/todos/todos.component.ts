@@ -3,6 +3,7 @@
  */
 
 import {Component} from '@angular/core';
+import {TodoService} from '../../services/todo.service';
 
 @Component({
   selector: 'todos',
@@ -40,7 +41,8 @@ import {Component} from '@angular/core';
   </ul>
 
   <button class="btn btn-default" (click)="resetTodos()">Reset</button>
-  `
+  `,
+  providers: [TodoService]
 })
 
 export class TodosComponent {
@@ -50,10 +52,8 @@ export class TodosComponent {
   errorMsg;
   successMsg;
 
-  constructor() {
-    this.todos = []
-    this.todos = ['Wash Dishes', 'Pickup Kids', "Eat Dinner"];
-    this.name = 'Harry';
+  constructor(private todoService:TodoService) {
+    this.todos = todoService.todos;
   }
 
   addTodo() {
@@ -61,18 +61,18 @@ export class TodosComponent {
       this.successMsg = '';
       this.errorMsg = 'Todo must be at least 3 characters';
     } else {
-      this.todos.push(this.newTodo);
+      this.todoService.addTodo(this.newTodo.trim());
       this.errorMsg = '';
       this.successMsg = 'Todo Added';
     }
   }
 
   removeTodo(todo) {
-    this.todos.splice(this.todos.indexOf(todo), 1);
+   this.todoService.removeTodo(todo);
   }
 
   resetTodos() {
-    this.todos.length = 0;
+    this.todoService.resetTodos();
     this.successMsg = 'Todos Cleared';
     this.newTodo = '';
   }
